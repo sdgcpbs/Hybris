@@ -61,12 +61,12 @@ spec:
                         . ./setantenv.sh
                         ant unittests
                     '''
-			jacoco( 
+			/* jacoco( 
 			      execPattern: '**/*.exec',
 			      classPattern: '**/*.class',
 			      sourcePattern: '**/*.java',
 			      exclusionPattern: '**/test*'
-			)
+			)*/
                  } 
             }   
         }
