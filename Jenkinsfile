@@ -51,7 +51,7 @@ spec:
             }   
         }
 		
-	stage('Unit Test') {
+	/* stage('Unit Test') {
             steps {
 		container('hybris') {
 
@@ -69,7 +69,7 @@ spec:
 			)*/
                  } 
             }   
-        }
+        } */
 		
 	/*stage('Code Quality') {
             environment {
