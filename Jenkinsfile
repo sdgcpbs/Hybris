@@ -71,7 +71,7 @@ spec:
             }   
         }
 		
-	stage('Code Quality') {
+	/*stage('Code Quality') {
             environment {
                 scannerHome = tool 'Sonarqube'
             }
@@ -87,7 +87,7 @@ spec:
                 	}
 		}
             }
-        }
+        }*/
 	    
 	stage('Deploy') {
 		//if (propfile['feature_deploy'] == "true" || env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'release')
