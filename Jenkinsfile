@@ -65,23 +65,6 @@ spec:
             }   
         } 
 		
-	/*stage('Code Quality') {
-            environment {
-                scannerHome = tool 'Sonarqube'
-            }
-            steps {
-		container('maven') {
-                	withSonarQubeEnv(installationName:'Sonarqube') {
-                    		sh ''' $scannerHome/bin/sonar-scanner -X -Dsonar.projectName=hybris_sample1 -Dsonar.projectKey=hybris_sample1 -Dsonar.projectVersion=1.0 -Dsonar.extensions=trainingstorefront-Dsonar.host.url='https://sonarqube.sgn.devops.accentureanalytics.com/' -Dsonar.login=5f5c96ea5e46f6f532379d711295755534744ef8 -Dsonar.exclusions=file:**/gensrc/**,**/*demo.html,web/webroot/**/web.xml,web/webroot/WEB-INF/config/**/*,web/webroot/WEB-INF/lib/**/*,web/webroot/WEB-INF/views/welcome.jsp,web/webroot/index.jsp,**/*BeforeViewHandler*.java,web/webroot/static/bootstrap/js/*.js,web/webroot/static/theme/js/*.js,web/webroot/signetsmarteditmodule/js/*.js,**/*Constants.java,**/jalo/**,**/email/context/**,**/*Form*.java,web/src/**,**/platform/**,src/com/hybris/yprofile/**,resources/apache-nutch-1.16-custom-code/apache-nutch-1.16/**,**/*.java
-                    		'''
-                	}
-                	timeout(time: 10, unit: 'MINUTES') {
-				sleep(180)
-                		waitForQualityGate abortPipeline: true
-                	}
-		}
-            }
-        }*/
 	    
 	stage('Deploy') {
 		//if (propfile['feature_deploy'] == "true" || env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'release')
