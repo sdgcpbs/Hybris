@@ -65,7 +65,7 @@ spec:
             }   
         } 
 	
-	/* stage('Unit Test') {
+	stage('Unit Test') {
             steps {
 		container('hybris') {
 
@@ -75,12 +75,12 @@ spec:
                         . ./setantenv.sh
                         ant unittests
                     '''
-			/* jacoco( 
+		    jacoco( 
 			      execPattern: '**/*.exec',
 			      classPattern: '**/*.class',
 			      sourcePattern: '**/*.java',
 			      exclusionPattern: '**/test*'
-			)*/
+			)
                  } 
             }   
         } 
