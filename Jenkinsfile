@@ -61,20 +61,6 @@ spec:
                         . ./setantenv.sh
                         ant unittests
                     '''
-                 } 
-            }   
-        } 
-	
-	stage('Unit Test') {
-            steps {
-		container('hybris') {
-
-                    sh '''
-
-                        cd /hybris-commerce-suite/hybris/bin/platform 
-                        . ./setantenv.sh
-                        ant unittests
-                    '''
 		    jacoco( 
 			      execPattern: '**/*.exec',
 			      classPattern: '**/*.class',
