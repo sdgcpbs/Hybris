@@ -30,6 +30,11 @@ spec:
 			
 		container('hybris') {
 			
+		   script{
+			propfile = readProperties(file: './devops.properties')
+			}
+			
+			
                     sh '''
                         #!/bin/bash
                         java -version
@@ -90,8 +95,7 @@ spec:
         }
 	    
 	stage('Deploy') {
-		//if (propfile['feature_deploy'] == "true" || env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'release')
-		when { branch 'develop'}
+		when { expression { BRANCH_NAME == 'dev' || BRANCH_NAME == 'release' || propfile['feature_deploy'] == "true" } }
             		steps {
 				echo "I am executing Deploy to target dev environment."
 				echo "Work in progress"
@@ -99,6 +103,7 @@ spec:
         	}
 
 	stage('Post Deploy Tests') {
+		when { expression { BRANCH_NAME == 'dev' || BRANCH_NAME == 'release' || propfile['feature_deploy'] == "true" } }
 		parallel {
 			stage('Smoke Test') {
 				steps {
