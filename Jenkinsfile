@@ -23,14 +23,18 @@ spec:
         }
     }  
 
-		
+	environment{
+		scannerHome = tool 'Sonarqube'
+		CCV2CMD="/app/sap_cli/bin"
+		ccv2_env="d1"
+		ccv2_temp_branch="ccv2_deploy_${ccv2_env}"
+	}
     	stages {
         
 		stage('Build') {
             		steps {
 			
 				container('hybris') {
-					
 					script{
 						propfile = readProperties(file: './devops.properties')
 					}
@@ -39,17 +43,7 @@ spec:
                         			#!/bin/bash
 						export JAVA_HOME=/app/sapjvm8/sapjvm_8/
                         			java -version
-                        			pwd
-						cd /
-						ls 
-						cd /hybris-commerce-suite/
-						ls
-						ps -ef | grep java
-						cd /app/sapjvm8
-						ls
-                        
                         			mkdir -p /hybris-commerce-suite/hybris/bin/custom/training/trainingstorefront/
-			
                         			cp -R /$WORKSPACE/bin/custom/training/trainingstorefront/ /hybris-commerce-suite/hybris/bin/custom/training/trainingstorefront/
 						cd /hybris-commerce-suite/hybris/bin/custom/training/trainingstorefront/
 						ls
@@ -104,13 +98,10 @@ spec:
         	}
 		
 		stage('Code Quality') {
-            		environment {
-                		scannerHome = tool 'Sonarqube'
-            		}
             		steps {
 				container('maven') {
                 			withSonarQubeEnv(installationName:'Sonarqube') {
-                    				sh ''' $scannerHome/bin/sonar-scanner -X -Dsonar.projectName=hybris_${BRANCH_NAME} -Dsonar.projectKey=hybris_sample -Dsonar.projectVersion=1.0 -Dsonar.extensions=trainingstorefront-Dsonar.host.url='https://sonarqube.sgnt.devops.accentureanalytics.com/'  -Dsonar.exclusions=file:**/gensrc/**,**/*demo.html,web/webroot/**/web.xml,web/webroot/WEB-INF/config/**/*,web/webroot/WEB-INF/lib/**/*,web/webroot/WEB-INF/views/welcome.jsp,web/webroot/index.jsp,**/*BeforeViewHandler*.java,web/webroot/static/bootstrap/js/*.js,web/webroot/static/theme/js/*.js,web/webroot/signetsmarteditmodule/js/*.js,**/*Constants.java,**/jalo/**,**/email/context/**,**/*Form*.java,web/src/**,**/platform/**,src/com/hybris/yprofile/**,resources/apache-nutch-1.16-custom-code/apache-nutch-1.16/**,**/*.java
+                    				sh ''' $scannerHome/bin/sonar-scanner -X -Dsonar.projectName=hybris_${BRANCH_NAME} -Dsonar.projectKey=hybris_sample -Dsonar.projectVersion=1.0 -Dsonar.qualityGate=Hybris_Sonar -Dsonar.extensions=trainingstorefront-Dsonar.host.url='https://sonarqube.sgnt.devops.accentureanalytics.com/' -Dsonar.exclusions=file:**/gensrc/**,**/*demo.html,web/webroot/**/web.xml,web/webroot/WEB-INF/config/**/*,web/webroot/WEB-INF/lib/**/*,web/webroot/WEB-INF/views/welcome.jsp,web/webroot/index.jsp,**/*BeforeViewHandler*.java,web/webroot/static/bootstrap/js/*.js,web/webroot/static/theme/js/*.js,web/webroot/signetsmarteditmodule/js/*.js,**/*Constants.java,**/jalo/**,**/email/context/**,**/*Form*.java,web/src/**,**/platform/**,src/com/hybris/yprofile/**,resources/apache-nutch-1.16-custom-code/apache-nutch-1.16/**,**/*.java
                     				'''
                 			}
                 			timeout(time: 10, unit: 'MINUTES') {
@@ -130,13 +121,13 @@ spec:
 		}
 	    
 		stage('Deploy') {
-			when { expression { BRANCH_NAME == 'dev' || BRANCH_NAME == 'release' || propfile['feature_deploy'] == "true" } }
+			when { expression {env.GIT_BRANCH == 'dev' || env.GIT_BRANCH == 'release'|| propfile['feature_deploy'] == "true" }}
             		steps {
 				container('hybris') {
 					
 					echo "I am executing Deploy to target environment."
 					sh '''	
-					cd /app/sap_cli/bin/
+					cd $CCV2CMD
 					export JAVA_HOME=/app/sapmachine-jdk-11.0.10/
 					./sapccm --help
 					'''
@@ -148,10 +139,8 @@ spec:
 					  
 					  	echo "Check a Build"
 					  	sapccm  build show –subscription-code=SUBSCRIPTION_CODE  --build-code=BUILD_CODE
-
 					  	echo "Create a Deployment"
 					  	sapccm deployment create –build-code=BUILD_CODE  --subscription-code=SUBSCRIPTION_CODE  --database-update-mode=NONE/UPDATE/INITIALIZE  --environment-code=d1/s1/p1  --strategy=CREATE/ROLLING_UPDATE  --subscriptioni-code=SUBSCRIPTION_CODE
-
 					  	echo "Check Deployment" 
 					  	sapccm deployment list –subscription-code=SUBSCRIPTION_CODE 
 					*/
@@ -161,7 +150,7 @@ spec:
         	}
 
 		stage('Post Deploy Tests') {
-			when { expression { BRANCH_NAME == 'dev' || BRANCH_NAME == 'release' || propfile['feature_deploy'] == "true"} }
+			when { expression {env.GIT_BRANCH == 'dev' || env.GIT_BRANCH == 'release'|| propfile['feature_deploy'] == "true" }}
 			parallel {
 				stage('Smoke Test') {
 					steps {
