@@ -8,10 +8,10 @@ spec:
   containers:
   - name: hybris
     image: signet/hybris-ant:1811_21-V8
+    imagePullPolicy: Always
     command: 
     - /bin/bash
     tty: true	
-  imagePullPolicy: Always
   - name: maven
     image: maven:3.6.1-slim
     command: 
