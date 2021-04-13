@@ -11,6 +11,7 @@ spec:
     command: 
     - /bin/bash
     tty: true	
+  imagePullPolicy: Always
   - name: maven
     image: maven:3.6.1-slim
     command: 
