@@ -58,7 +58,7 @@ spec:
 						#ant addonuninstall -Daddonnames=assistedservicestorefront,smarteditaddon,captchaaddon,profiletagaddon -DaddonStorefront.yacceleratorstorefront=signetstorefront
 						#ant addoninstall -Daddonnames=assistedservicestorefront,smarteditaddon,captchaaddon,profiletagaddon -DaddonStorefront.yacceleratorstorefront=signetstorefront
                         			ant customize clean build 
-						// ant production -Dproduction.legacy.mode=true -Dproduction.include.tomcat=true
+						#ant production -Dproduction.legacy.mode=true -Dproduction.include.tomcat=true
             		
 		                    	'''
 		    			echo "Performing npm build..."
